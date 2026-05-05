@@ -212,13 +212,16 @@ secure-connect-ama3-dev.zip
 secure-connect-dev-vecdata-cluster1.zip
 reportGeneration.ipynb
 reportGeneration_1.ipynb
+ui/
 
 *.sh
 streamlit/Dockerfile
-Dockerfile
-Dockerfile.ui
 
-# Python bytecode
-__pycache__/
-*.py[cod]
-*$py.class
+# macOS system files
+.DS_Store
+
+# Jupyter Notebook files
+*.ipynb
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
