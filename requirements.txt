@@ -1,0 +1,20 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+uvicorn==0.37.0                     # https://pypi.org/project/uvicorn/
+python-dotenv==1.1.1                # https://pypi.org/project/python-dotenv/
+uvicorn[standard]
+fastapi==0.119.0                    # https://pypi.org/project/fastapi/
+astrapy==2.1.0                      # https://pypi.org/project/astrapy/
+groq==0.34.1                        # https://pypi.org/project/groq/
+PyMuPDF==1.26.6                     # https://pypi.org/project/PyMuPDF/
+langchain-text-splitters==1.0.0     # https://pypi.org/project/langchain-text-splitters/
+langchain_community==0.3.31         # https://pypi.org/project/langchain_community/
+reportlab==4.4.10                   # https://pypi.org/project/reportlab/
+python-docx==1.2.0                  # https://pypi.org/project/python-docx/
+firecrawl==4.18.1                   # https://pypi.org/project/firecrawl/
+boto3==1.42.63                      # https://pypi.org/project/boto3/
+motor==3.7.1                        # https://pypi.org/project/motor/
+tiktoken==0.12.0                    # https://pypi.org/project/tiktoken/
+streamlit==1.55.0                   # https://pypi.org/project/streamlit/
+sentence-transformers==5.2.3        # https://pypi.org/project/sentence-transformers/
+openai==2.26.0                      # https://pypi.org/project/openai/
+aiohttp==3.13.5
