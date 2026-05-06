@@ -29,7 +29,7 @@ load_dotenv()
 
 # ── ENV ─────────────────────────────────────────────────
 DEFAULT_INGEST_URL = os.getenv(
-    "INGEST_API_URL",
+    "BASE_URL",
     "http://127.0.0.1:8000/asset_builder/evaluate/",
 )
 API_USERNAME = os.getenv("API_USERNAME", "").strip()

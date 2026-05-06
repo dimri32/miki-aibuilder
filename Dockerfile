@@ -1,5 +1,6 @@
-# syntax=docker/dockerfile:1
-FROM python:3.10-slim
+FROM python:3.10
+ENV APP_HOME=/app
+WORKDIR $APP_HOME
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libgomp1 \
@@ -28,7 +29,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
 
 # Install Python dependencies first (leverages Docker layer caching)
 COPY requirements.txt /app/requirements.txt
@@ -38,7 +38,7 @@ RUN python -m pip install --upgrade pip \
 
 
 # Copy application code 
-COPY . /src/
+COPY src/ ./src/
 
 # List all files and nested directories
 RUN echo "Listing contents of /src:" && ls -R /src
