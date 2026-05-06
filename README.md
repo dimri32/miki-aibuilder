@@ -1,17 +1,11 @@
-# Realtime Streaming
+# AI Builder EvalFramework
 
-This folder contains the implementation and resources for real-time streaming functionality in the `ci-truefoundry-endpoints` project.
+This folder contains the implementation and resources for Evaluating content genreation via Miki endpoint via `ci-truefoundry-endpoints`.
 
 
 ## Overview
 
-The real-time streaming module is designed to handle continuous data streams efficiently. It integrates with external streaming platforms and provides tools for processing, transforming, and analyzing data in real-time.
-
-### Key Features
-- **Data Ingestion**: Supports multiple data sources for real-time ingestion.
-- **Stream Processing**: Implements transformations and analytics on the fly.
-- **Scalability**: Designed to handle high-throughput data streams.
-- **Extensibility**: Easily customizable for additional use cases.
+Miki + Mannual evalution needed
 
 ## Getting Started
 
@@ -43,19 +37,14 @@ pytest tests/
 ## Docker Local Testing
 ### Backend
 ```bash
-docker build -f Dockerfile -t asset_builder .
+docker build -t ai-builder-evaluator . 
 ```
 
 ```bash
 docker run -p 8501:8501 --env-file .env asset_builder
 ```
 
-### UI
 ```bash
-docker build -f Dockerfile -t asset_builder-ui .
-```
-
-```bash
-docker run -p 8501:8501 --env-file .env asset_builder-ui
+docker run -it ai-builder-evaluator /bin/bash
 ```
 

@@ -18,4 +18,4 @@ COPY *.md ./
 COPY *.txt ./
 
 # Start the FastAPI app; respect PORT if provided by platform
-# CMD ["sh", "-c", "uvicorn app.main:app --host 127.0.0.1 --port ${PORT:-8000}"]
+# CMD ["uvicorn", "src:app", "--host", "0.0.0.0", "--port", "8000"]
