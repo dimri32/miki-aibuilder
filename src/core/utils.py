@@ -5,6 +5,7 @@ from functools import lru_cache
 from threading import Lock
 import numpy as np
 import requests
+import aiohttp
 import asyncio
 import base64
 import json
@@ -14,11 +15,11 @@ import os
 # openai imports
 from openai import OpenAI
 
-# trasnformer imports
-from sentence_transformers import SentenceTransformer
+# # trasnformer imports
+# from sentence_transformers import SentenceTransformer
 
 # local imports
-from src.core.database import CustomEmbedding, AstraIndex
+# from src.core.database import CustomEmbedding, AstraIndex
 from src.core.logger import AIBuilderEvalLogger
 from src.config import confy
 
@@ -27,20 +28,20 @@ logger = AIBuilderEvalLogger(name=__name__, log_level=confy.log_level)
 # Prevent double-load races if multiple threads hit the first encode at once
 _EMBEDDER_LOCK = Lock()
 
-hf_custom_model = SentenceTransformer(
-    confy.EMBEDDING_MODEL_ID,
-    truncate_dim=confy.DIM,
-    token=confy.EMBEEDING_HF_TOKEN
-) # small variant
-hf_custom_embedding = CustomEmbedding(hf_custom_model)
+# hf_custom_model = SentenceTransformer(
+#     confy.EMBEDDING_MODEL_ID,
+#     truncate_dim=confy.DIM,
+#     token=confy.EMBEEDING_HF_TOKEN
+# ) # small variant
+# hf_custom_embedding = CustomEmbedding(hf_custom_model)
 
-astra_index = AstraIndex(
-    token=confy.ASTRAV_DB_APPLICATION_TOKEN,
-    api_endpoint=confy.ASTRAV_DB_API_ENDPOINT,
-    keyspace=confy.keyspace,
-    model=hf_custom_embedding,
-    collection_name=confy.ASTRAV_VECTOR_COLLECTION
-)
+# astra_index = AstraIndex(
+#     token=confy.ASTRAV_DB_APPLICATION_TOKEN,
+#     api_endpoint=confy.ASTRAV_DB_API_ENDPOINT,
+#     keyspace=confy.keyspace,
+#     model=hf_custom_embedding,
+#     collection_name=confy.ASTRAV_VECTOR_COLLECTION
+# )
 
 
 class TinyVectorIndex:
@@ -263,35 +264,35 @@ async def get_questions_from_primary_query(primary_query: str, k: int = 10) -> L
 
     return list(questions)
 
-async def _fetch_docs(sub_query: str, top_k: int, min_similarity: float):
-    try:
-        docs = astra_index.search_content_threshold(
-            query=sub_query,
-            top_k=top_k,
-            min_similarity=min_similarity
-        )
-        return sub_query, docs or []
-    except Exception as e:
-        print(f"[ERROR] {sub_query}: {e}")
-        return sub_query, []
+# async def _fetch_docs(sub_query: str, top_k: int, min_similarity: float):
+#     try:
+#         docs = astra_index.search_content_threshold(
+#             query=sub_query,
+#             top_k=top_k,
+#             min_similarity=min_similarity
+#         )
+#         return sub_query, docs or []
+#     except Exception as e:
+#         print(f"[ERROR] {sub_query}: {e}")
+#         return sub_query, []
 
-async def get_relevant_docs_parallel(
-    sub_queries: List[str],
-    top_k: int = 5,
-    min_similarity: float = 0.7
-) -> Dict[str, List[Dict[str, Any]]]:
-    """
-    Parallel version for faster retrieval.
-    """
+# async def get_relevant_docs_parallel(
+#     sub_queries: List[str],
+#     top_k: int = 5,
+#     min_similarity: float = 0.7
+# ) -> Dict[str, List[Dict[str, Any]]]:
+#     """
+#     Parallel version for faster retrieval.
+#     """
 
-    tasks = [
-        _fetch_docs(q, top_k, min_similarity)
-        for q in sub_queries
-    ]
+#     tasks = [
+#         _fetch_docs(q, top_k, min_similarity)
+#         for q in sub_queries
+#     ]
 
-    results = await asyncio.gather(*tasks)
+#     results = await asyncio.gather(*tasks)
 
-    return {query: docs for query, docs in results}
+#     return {query: docs for query, docs in results}
 
 
 # def get_miki_answers(
@@ -382,9 +383,6 @@ async def get_relevant_docs_parallel(
 #             results_map[query] = f"ERROR: {str(e)}"
 
 #     return results_map
-
-import aiohttp
-
 
 async def fetch_miki_response(session, url, auth, query, tenant, semaphore):
     query_payload = {
