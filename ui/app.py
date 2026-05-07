@@ -30,7 +30,7 @@ load_dotenv()
 # ── ENV ─────────────────────────────────────────────────
 DEFAULT_INGEST_URL = os.getenv(
     "BASE_URL",
-    "http://127.0.0.1:8000/asset_builder/evaluate/",
+    "https://miki-aibuilder-eval-miki-agent-8000.aviso.truefoundry.cloud/asset_builder/evaluate/",
 )
 API_USERNAME = os.getenv("API_USERNAME", "").strip()
 API_PASSWORD = os.getenv("API_PASSWORD", "").strip()
