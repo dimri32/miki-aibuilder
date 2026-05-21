@@ -78,17 +78,18 @@ async def run_pipeline(job_id: str, req: EvaluatorRequest):
         #     req.k,
         #     req.tenant,
         # )
-        results_map = await get_miki_answers_async(
+        results_map, scores_map = await get_miki_answers_async(
             req.query,
             req.k,
             req.tenant,
-            max_concurrency=5  # tweak: 3–10 based on API capacity
+            max_concurrency=5
         )
 
         JOB_STORE[job_id].update({
             "progress": 90,
             "message": "Aggregating results...",
             "results_map": results_map,
+            "scores_map": scores_map,
         })
 
         JOB_STORE[job_id].update({

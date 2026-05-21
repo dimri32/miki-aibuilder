@@ -20,6 +20,7 @@ from openai import OpenAI
 
 # local imports
 # from src.core.database import CustomEmbedding, AstraIndex
+from src.core.nl_query_generator import generate_nl_subqueries
 from src.core.logger import AIBuilderEvalLogger
 from src.config import confy
 
@@ -420,42 +421,44 @@ async def fetch_miki_response(session, url, auth, query, tenant, semaphore):
 
                 duration_ms = (time.perf_counter() - start_time) * 1000
 
-                # SUCCESS LOG
+                if not detailed_text:
+                    raw_preview = str(response_data)[:300]
+                    logger.warning(
+                        f"[MIKI_NO_CONTENT] query='{query}' duration_ms={duration_ms:.2f} "
+                        f"raw={raw_preview}"
+                    )
+                    return query, None
+
                 logger.info(
                     f"[MIKI_CALL_SUCCESS] query='{query}' "
                     f"duration_ms={duration_ms:.2f}"
                 )
-
-                return query, detailed_text or str(custom_response)
+                return query, detailed_text
 
         except Exception as e:
             duration_ms = (time.perf_counter() - start_time) * 1000
-
-            # ERROR LOG
             logger.error(
                 f"[MIKI_CALL_ERROR] query='{query}' "
                 f"duration_ms={duration_ms:.2f} error={str(e)}"
             )
-
-            return query, f"ERROR: {str(e)}"
+            return query, None
         
 async def get_miki_answers_async(
     primary_query: str,
     k: int = 10,
     tenant: str = "ironclad",
-    max_concurrency: int = 5   # ✅ tunable
+    max_concurrency: int = 5,
+    workflow_id: str = ""
 ):
 
-    # ── Step 1: Embed + Search ─────────────────────────
-    qvec = _generate_embedding(primary_query)
+    payload = await generate_nl_subqueries(primary_query, target_count=k)
+    payload = payload[:k]  # hard cap — never fire more MIKI calls than requested
 
-    _tiny_index.load()
-    hits = _tiny_index.search(qvec, k=k)
-
-    payload = [
-        {"question": meta.get("query_text", ""), "priority": score}
-        for score, meta in hits
-    ]
+    # Preserve priority scores keyed by question text before MIKI calls
+    scores_map: Dict[str, float] = {
+        item["question"]: item["priority"]
+        for item in payload if item.get("question")
+    }
 
     # ── Step 2: Setup API ──────────────────────────────
     API_URL = confy.MIKI_API_URL
@@ -483,7 +486,7 @@ async def get_miki_answers_async(
 
         responses = await asyncio.gather(*tasks)
 
-    # ── Step 4: Aggregate ──────────────────────────────
-    results_map = {query: result for query, result in responses}
+    # ── Step 4: Aggregate — drop skipped / errored responses ──────────
+    results_map = {query: result for query, result in responses if result}
 
-    return results_map
+    return results_map, scores_map
