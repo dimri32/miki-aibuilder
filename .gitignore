@@ -219,6 +219,12 @@ streamlit/Dockerfile
 # macOS system files
 .DS_Store
 
+# Node / Next.js
+node_modules/
+ui/nextjs/.next/
+ui/nextjs/out/
+ui/nextjs/.env.local
+
 # Jupyter Notebook files
 *.ipynb
 
