@@ -17,5 +17,5 @@ COPY *.npz ./
 COPY *.md ./
 COPY *.txt ./
 
-# Start the FastAPI app; respect PORT if provided by platform
-# CMD ["uvicorn", "src:app", "--host", "0.0.0.0", "--port", "8000"]
+# # Start the FastAPI app
+# CMD ["uvicorn", "src:app", "--host", "0.0.0.0", "--port", "8001"]
