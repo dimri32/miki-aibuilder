@@ -212,7 +212,6 @@ secure-connect-ama3-dev.zip
 secure-connect-dev-vecdata-cluster1.zip
 reportGeneration.ipynb
 reportGeneration_1.ipynb
-ui/
 
 *.sh
 streamlit/Dockerfile
